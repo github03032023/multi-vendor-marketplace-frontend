@@ -29,7 +29,7 @@ const VendorRegister = () => {
             "name": formData.get('name'),
             "email": formData.get('email'),
             "password": formData.get('password'),
-            "confirmPassword": formData.get('confirmPassword'),
+            "confirmpassword": formData.get('confirmpassword'),
             "gender" : formData.get('gender'),
             "age" : formData.get('age'),
             "phone": formData.get('phone'),
@@ -40,7 +40,7 @@ const VendorRegister = () => {
                 "postalCode": formData.get('homePostalCode'),
                 "country": formData.get('homeCountry')
             },
-            companyDetails: {
+            "companyDetails": {
                 "companyName": formData.get('companyName'),
                 "companyAddress": {
                     "street": formData.get('companyStreet'),
@@ -49,7 +49,7 @@ const VendorRegister = () => {
                     "postalCode": formData.get('companyPostalCode'),
                     "country": formData.get('companyCountry')
                 },
-                companyType: formData.get('companyType')
+                "companyType": formData.get('companyType')
             },
             "bankAccount": {
                 "accountHolderName": formData.get('accountHolderName'),
@@ -60,19 +60,21 @@ const VendorRegister = () => {
             }
 
         };
-        if (data.password !== data.confirmPassword) {
+        if (data.password !== data.confirmpassword) {
             setError('Passwords do not match');
             return;
         }
 
         try {
             const response = await axios.post("/vendor/registerVendor", data);
+            console.log("Response is ",response.data);
             if (response.data.success) {
                 navigate('/vendorLogin');
             } else {
                 setError(response.data.message);
             }
         } catch (error) {
+            console.error("Error details:", error.response); 
             setError('Vendor Registration failed. Please try again.');
         }
     };
@@ -103,7 +105,7 @@ const VendorRegister = () => {
                                 </div>
                                 <div className="mb-3 col-md-6">
                                     <label className="form-label">Confirm Password</label>
-                                    <input type="password" name="confirmPassword" className="form-control" required minLength="8" />
+                                    <input type="password" name="confirmpassword" className="form-control" required minLength="8" />
                                 </div>
                                 <div className="mb-3 col-md-6">
                                     <label className="form-label">Gender</label>
@@ -239,3 +241,4 @@ const VendorRegister = () => {
 };
 
 export default VendorRegister;
+

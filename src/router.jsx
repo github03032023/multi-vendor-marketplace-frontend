@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {Routes, Route} from "react-router-dom";
 import UserRegister from "./pages/customer/register";
 import VendorRegister from "./pages/vendor/vendorregister";
@@ -6,21 +6,36 @@ import Login from "./pages/customer/userLogin";
 import VendorDashboard from "./pages/vendor/vendorDashboard";
 import Unauthorized from "./pages/unauthorized";
 import VendorLogin from "./pages/vendor/vendorLogin";
+import Header from "./components/Header";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.min.js';
+import ProductsDBData from "./components/ProductsDBData";
+import Payment from "./components/Payment";
+import AuthRoute from "./components/AuthRoute/authRoute";
+import Cart from "./components/Cart";
 
 const AppRoutes = () => {
+    const [searchQuery, setSearchQuery] = useState("");
     return (
+        <>
+        <Header setSearchQuery={setSearchQuery} />
         <Routes>
+            <Route path="/" element={<ProductsDBData searchQuery={searchQuery} />} />
+            <Route path="/cart" element={<Cart />} /> 
             <Route path="/userRegister" element={<UserRegister />}  />
             <Route path="/login" element={<Login />}  />
             <Route path="/vendorRegister" element={<VendorRegister />}/>
             <Route path="/vendorLogin" element={<VendorLogin />}  />
             <Route path="/vendorDashboard" element={<VendorDashboard />}  />
             <Route path="/unauthorized" element={<Unauthorized />}  />
+
             
-            
+            <Route element={<AuthRoute allowedRoles={['customer', 'admin']} />}>
+            <Route path="/payment" element={<Payment />} />
+            </Route>
         </Routes>
 
-
+        </>
 
 
   

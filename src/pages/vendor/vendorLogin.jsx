@@ -4,6 +4,8 @@ import { jwtDecode } from 'jwt-decode';
 import { Link } from "react-router-dom";
 import { UserContext } from '../../context/userContext';
 import axios from '../../api/axiosSetUp';
+import vendorlogin from '../../assets/images/VendorLogin.png';
+
 
 const VendorLogin = () => {
     const [email, setEmail] = useState("");
@@ -23,7 +25,7 @@ const VendorLogin = () => {
                 localStorage.setItem("token", token); // Store JWT
                 // Decode token to get user information
                 const decodedToken = jwtDecode(token);
-                localStorage.setItem("userId", decodedToken.vendorId);
+                localStorage.setItem("vendorId", decodedToken.vendorId);
                 console.log("vendorId is -", decodedToken.vendorId);
                 // localStorage.setItem("role", decodedToken.role);
                 // console.log("role is -", decodedToken.role);
@@ -45,7 +47,15 @@ const VendorLogin = () => {
             <div className="row vh-100 align-items-center">
                 {/* Left Side - Image */}
                 <div className="col-md-6 d-none d-md-block">
-                    <img src="/images/login.jpg" alt="Login" className="img-fluid rounded" />
+                    {/* <img src="/images/login.jpg" alt="Login" className="img-fluid rounded" /> */}
+                    <div className="w-100 h-100">
+                        <img
+                            src={vendorlogin}
+                            alt="Vendor Login"
+                            className="img-fluid w-100 h-100 rounded-start"
+                            style={{ objectFit: 'cover' }}
+                        />
+                    </div>
                 </div>
 
                 {/* Right Side - Login Form */}
@@ -78,7 +88,7 @@ const VendorLogin = () => {
                         </form>
                     </div>
                     <p className="text-center mt-3">
-                        Don't have an account? <Link to="/register">Register here</Link>
+                        Don't have an account? <Link to="/vendorRegister">Register here</Link>
                     </p>
                 </div>
             </div>

@@ -47,16 +47,16 @@ const Login = () => {
                 setError(response.data.message);
             }
         } catch (err) {
+            console.error("Error details:", error.response); 
             setError("Invalid email or password");
         }
     };
 
     return (
-        <div className="container">
-            <div className="row vh-100 align-items-center">
+        <div className="container" style={{ paddingTop: '80px' }}>
+            <div className="row align-items-center" style={{ minHeight: 'calc(100vh - 80px)' }}>
                 {/* Left Side - Image */}
                 <div className="col-md-6 d-none d-md-block">
-                    {/* <img src="/images/login.jpg" alt="Login" className="img-fluid rounded" /> */}
                     <img src={login} alt="Login" className="img-fluid rounded" />
                 </div>
 
@@ -90,7 +90,7 @@ const Login = () => {
                         </form>
                     </div>
                     <p className="text-center mt-3">
-                        Don't have an account? <Link to="/register">Register here</Link>
+                        Don't have an account? <Link to="/userRegister">Register here</Link>
                     </p>
                 </div>
             </div>
