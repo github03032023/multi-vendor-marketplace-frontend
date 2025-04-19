@@ -44,56 +44,7 @@
 // export default ProductCard
 
 
-
-
-
-
-// import React from 'react';
-// import 'bootstrap/dist/css/bootstrap.min.css';
-
-// const ProductCard = ({ productId, productName, images, price, category, description }) => {
-//     return (
-//         <div className="card h-100 shadow-sm">
-//             <div className="carousel slide" id={`carousel-${productId}`} data-bs-ride="carousel">
-//                 <div className="carousel-inner">
-//                     {images.map((img, index) => (
-//                         <div className={`carousel-item ${index === 0 ? 'active' : ''}`} key={img._id}>
-//                             <img
-//                                 src={img.url}
-//                                 alt={img.altText}
-//                                 className="d-block w-100"
-//                                 style={{ height: '200px', objectFit: 'cover' }}
-//                             />
-//                         </div>
-//                     ))}
-//                 </div>
-//                 {images.length > 1 && (
-//                     <>
-//                         <button className="carousel-control-prev" type="button" data-bs-target={`#carousel-${productId}`} data-bs-slide="prev">
-//                             <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-//                         </button>
-//                         <button className="carousel-control-next" type="button" data-bs-target={`#carousel-${productId}`} data-bs-slide="next">
-//                             <span className="carousel-control-next-icon" aria-hidden="true"></span>
-//                         </button>
-//                     </>
-//                 )}
-//             </div>
-
-//             <div className="card-body">
-//                 <h5 className="card-title">{productName}</h5>
-//                 <p className="card-text">{description}</p>
-//                 <p className="text-muted">{category}</p>
-//                 <h6>${price}</h6>
-//             </div>
-//         </div>
-//     );
-// };
-
-// export default ProductCard;
-
-
-
-
+// Implemented Carousel for multiple Images
 
 import React from 'react';
 import { useDispatch } from "react-redux";

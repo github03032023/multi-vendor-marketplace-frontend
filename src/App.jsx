@@ -7,7 +7,7 @@ const App = () => {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    axios.get("http://localhost:5000")
+    axios.get("https://multi-vendor-marketplace-backend.onrender.com")
       .then(response => setMessage(response.data))
       .catch(error => console.error(error));
   }, []);
