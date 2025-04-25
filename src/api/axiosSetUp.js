@@ -2,8 +2,8 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-  // baseURL: 'https://multi-vendor-marketplace-backend.onrender.com/api/auth', // adjust as needed
-  baseURL: 'http://localhost:5000/api/auth', // adjust as needed
+   baseURL: 'https://multi-vendor-marketplace-backend.onrender.com/api/auth', // adjust as needed
+  // baseURL: 'http://localhost:5000/api/auth', // adjust as needed
 });
 
 // Add token from localStorage
