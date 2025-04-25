@@ -50,12 +50,14 @@ import React from 'react';
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../slices/cartSlice";
 import MyCarousel from "./MyCarousel"; 
+import {addItemToCart } from "../../api/cartActions";
 
-const ProductCard = ({ productId, productName, description, price, category, images }) => {
+const ProductCard = ({ productId, productName, productCode, description, price, category, images, vendorId }) => {
   const dispatch = useDispatch();
-
+  
   const handleAddToCart = () => {
-    const product = { productId, productName, description, price, category, images };
+    const product = { productId, productName, productCode, description, price, category, images, vendorId };
+    dispatch(addItemToCart(productCode, 1));
     dispatch(addToCart(product));
   };
 
@@ -75,7 +77,7 @@ const ProductCard = ({ productId, productName, description, price, category, ima
         <h5 className="card-title">{productName}</h5>
         <p className="card-text fw-bold">{category}</p>
         <p className="card-text flex-grow-1">{description}</p>
-        <p className="btn fw-bold">$. {price}</p>
+        <p className="btn fw-bold">Rs. {price}</p>
         <button className="btn btn-primary mt-auto" onClick={handleAddToCart}>Buy Now</button>
       </div>
     </div>

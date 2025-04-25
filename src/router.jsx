@@ -1,5 +1,5 @@
-import React, {useState} from "react";
-import {Routes, Route} from "react-router-dom";
+import React, { useState } from "react";
+import { Routes, Route } from "react-router-dom";
 import UserRegister from "./pages/customer/register";
 import VendorRegister from "./pages/vendor/vendorregister";
 import Login from "./pages/customer/userLogin";
@@ -13,62 +13,49 @@ import ProductsDBData from "./components/ProductsDBData";
 import Payment from "./components/Payment";
 import AuthRoute from "./components/AuthRoute/authRoute";
 import Cart from "./components/Cart";
+// Adding Stripe
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+import OrderPage from "./components/Order/orderPage";
+import OrderConfirmation from "./components/Order/orderConfirmation";
+
+
+const stripePromise = loadStripe("pk_test_51R4zWDHQ0Inu2WWrgWUYAbKrFrQQm0GCL4WmMQH0XA4RzriWnsQbN5MnsjQTMnT4RYI1H6IdHtIuAWAUMk7gtjrd00DKM65wVY");
 
 const AppRoutes = () => {
     const [searchQuery, setSearchQuery] = useState("");
     return (
         <>
-        <Header setSearchQuery={setSearchQuery} />
-        <Routes>
-            <Route path="/" element={<ProductsDBData searchQuery={searchQuery} />} />
-            <Route path="/cart" element={<Cart />} /> 
-            <Route path="/userRegister" element={<UserRegister />}  />
-            <Route path="/login" element={<Login />}  />
-            <Route path="/vendorRegister" element={<VendorRegister />}/>
-            <Route path="/vendorLogin" element={<VendorLogin />}  />
-            <Route path="/vendorDashboard" element={<VendorDashboard />}  />
-            <Route path="/unauthorized" element={<Unauthorized />}  />
+            <Header setSearchQuery={setSearchQuery} />
+            <Routes>
+                <Route path="/" element={<ProductsDBData searchQuery={searchQuery} />} />
+                <Route path="/cart" element={<Cart />} />
+                <Route path="/userRegister" element={<UserRegister />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/vendorRegister" element={<VendorRegister />} />
+                <Route path="/vendorLogin" element={<VendorLogin />} />
+                <Route path="/vendorDashboard" element={<VendorDashboard />} />
+                <Route path="/unauthorized" element={<Unauthorized />} />
+                <Route path="/placeOrder" element={<OrderPage />} />
+                
 
-            
-            <Route element={<AuthRoute allowedRoles={['customer', 'admin']} />}>
-            <Route path="/payment" element={<Payment />} />
-            </Route>
-        </Routes>
+
+                <Route element={<AuthRoute allowedRoles={['customer', 'admin']} />}>
+                    <Route
+                        path="/payment/:orderId"
+                        element={
+                            <Elements stripe={stripePromise}>
+                                <Payment />
+                            </Elements>
+                        }
+                    />
+                    <Route path="/order-confirmation/:orderId"
+                     element={<OrderConfirmation/>} />
+                </Route>
+                
+            </Routes>
 
         </>
-
-
-  
-// <Router>
-// <Header setSearchQuery={setSearchQuery} />
-// <Routes>
-//   <Route path="/" element={<ProductsDBData searchQuery={searchQuery} />} />
-//   <Route path="/cart" element={<Cart />} />  
-//   <Route path="/login" element={<Login />} />
-//   <Route path="/register" element={<Register />} />
-//   <Route path="/unauthorized" element={<Unauthorized />} />
-
-//   {/* Protected Routes for Admin. Admin Panel only available for ADmin */}
-//   <Route element={<AuthRoute allowedRoles={['admin']} />}>
-//     <Route path="/admin" element={<AdminPanel />} />
-
-//   </Route>
-
-//   {/* Protected Routes for User */}
-//   <Route element={<AuthRoute allowedRoles={['user', 'admin']} />}>
-//     {/* Wrap Payment Route with Stripe Elements */}
-//     <Route
-//       path="/payment"
-//       element={
-//         <Elements stripe={stripePromise}>
-//           <Payment />
-//         </Elements>
-//       }
-//     />
-//   </Route>
-//   <Route path="/order-confirmation" element={<OrderConfirmation />} />
-// </Routes>
-// </Router>
 
     )
 };

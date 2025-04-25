@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import ProductList from '../ProductList';
 import axios from '../../api/axiosSetUp';
+import { loadCart } from '../../api/cartActions';
+import {useDispatch} from 'react-redux';
 
 const ProductsDBData = ({searchQuery}) => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
+    const dispatch = useDispatch();
+    dispatch(loadCart());
 
     useEffect(() => {
         setLoading(true);

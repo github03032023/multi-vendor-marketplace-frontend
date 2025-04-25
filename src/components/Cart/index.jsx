@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { removeFromCart, clearCart } from "../../slices/cartSlice";
+import { clearCartOnLogout, loadCart } from "../../api/cartActions";
+import { removeItemFromCart, updateCartItemQuantity, clearCartFromBackend } from "../../api/cartActions"; // Async action
 import { Link, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -11,6 +12,12 @@ const Cart = () => {
 
   const [totalPrice, setTotalPrice] = useState(0);
 
+  // Load cart from localStorage/backend
+  useEffect(() => {
+    dispatch(loadCart());
+  }, [dispatch]);
+
+
   useEffect(() => {
     const total = cartItems.reduce(
       (acc, item) => acc + item.price * item.quantity,
@@ -19,14 +26,39 @@ const Cart = () => {
     setTotalPrice(total);
   }, [cartItems]);
 
+
+  const handleQuantityChange = (productCode, currentQty, noOfItems) => {
+    const newQty = currentQty + noOfItems;
+    if (newQty < 1) return; // prevent going below 1
+    dispatch(updateCartItemQuantity(productCode, newQty));
+  };
+
   const proceedToPay = () => {
     const token = localStorage.getItem("token");
     if (!token) {
       navigate("/login");
     } else {
-      navigate("/payment");
+      navigate("/placeOrder");
     }
   };
+
+  const handleRemove = (productCode) => {
+    dispatch(removeItemFromCart(productCode));
+  };
+
+  const isLoggedIn = !!localStorage.getItem("token");
+
+  const handleClearCart = () => {
+    if (isLoggedIn) {
+      // Call API to clear server-side cart
+      dispatch(clearCartFromBackend());
+    } else {
+      // Just clear localStorage or Redux state
+      dispatch(clearCartOnLogout());
+      
+    }
+  };
+
 
   return (
     <div className="container mt-5 pt-5">
@@ -40,7 +72,7 @@ const Cart = () => {
         </div>
       ) : (
         <>
-          <div className="row">
+          <div className="row" >
             {cartItems.map((item) => (
               <div
                 key={item.productId}
@@ -59,14 +91,31 @@ const Cart = () => {
                   <div className="card-body">
                     <h5 className="card-title">{item.productName}</h5>
                     <p className="card-text fw-bold">
-                      ${item.price} × {item.quantity}
+                      ${item.price} × {item.quantity} = ${(item.price * item.quantity).toFixed(2)}
                     </p>
+
+                    <div className="d-flex justify-content-center align-items-center mb-2">
+                      <button
+                        className="btn btn-outline-secondary btn-sm me-2"
+                        onClick={() => handleQuantityChange(item.productCode, item.quantity, -1)}
+                      >
+                        -
+                      </button>
+                      <span className="fw-bold">{item.quantity}</span>
+                      <button
+                        className="btn btn-outline-secondary btn-sm ms-2"
+                        onClick={() => handleQuantityChange(item.productCode, item.quantity, 1)}
+                      >
+                        +
+                      </button>
+                    </div>
+
                     <p className="card-text text-muted">{item.category}</p>
                   </div>
 
                   <button
                     className="btn btn-danger btn-sm"
-                    onClick={() => dispatch(removeFromCart(item.productId))}
+                    onClick={() => handleRemove(item.productCode)}
                   >
                     Remove
                   </button>
@@ -97,7 +146,7 @@ const Cart = () => {
       {cartItems.length > 0 && (
         <button
           className="btn btn-warning mt-3"
-          onClick={() => dispatch(clearCart())}
+          onClick={handleClearCart}
         >
           Clear Cart
         </button>
