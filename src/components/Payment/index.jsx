@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import { loadStripe } from "@stripe/stripe-js";
-import axios from "../../api/axiosSetUp";
+import axiosInstance from '../../api/axiosSetUp';
 import { clearCart } from "../../slices/cartSlice";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import {
   Elements,
   CardElement,
@@ -27,7 +29,7 @@ const CheckoutForm = () => {
   useEffect(() => {
     const fetchOrder = async () => {
       try {
-        const { data } = await axios.get(`/order/${orderId}`);
+        const { data } = await axiosInstance.get(`/order/${orderId}`);
         setOrder(data);
       } catch (err) {
         setError("Failed to load order.");
@@ -36,7 +38,7 @@ const CheckoutForm = () => {
 
     const createPaymentIntent = async () => {
       try {
-        const { data } = await axios.post("/payment/create-intent", { orderId });
+        const { data } = await axiosInstance.post("/payment/create-intent", { orderId });
         setClientSecret(data.clientSecret);
       } catch (err) {
         setError("Failed to initiate payment.");
@@ -59,16 +61,18 @@ const CheckoutForm = () => {
     if (result.error) {
       setError(result.error.message);
     } else if (result.paymentIntent.status === "succeeded") {
-      const paymentResult = await axios.post("/payment/confirm", {
+      const paymentResult = await axiosInstance.post("/payment/confirm", {
         orderId,
         paymentIntent: result.paymentIntent,
       });
 
       if (!paymentResult.paymentId) {
+        toast.success(`Payment successful!`);
         alert("Payment successful!");
         dispatch(clearCart());
         navigate(`/order-confirmation/${orderId}`);
       } else {
+        toast.error(`Payment has issues!`);
         setError("Payment succeeded, but no payment ID was returned.");
       }
     }
@@ -82,64 +86,64 @@ const CheckoutForm = () => {
           <span className="navbar-brand mb-0 h1">Checkout</span>
         </div>
       </nav>
-
+      <ToastContainer position="top-right" autoClose={3000} />
       {/* Main Content */}
       <div className="max-w-7xl mx-auto">
-      <div className="container" style={{ marginTop: "100px" }}>
-        <div className="row justify-content-center">
-          <div className="col-md-6 col-lg-5">
-            <div className="card shadow p-4">
-              <h4 className="text-center mb-4">Complete Your Payment</h4>
+        <div className="container" style={{ marginTop: "100px" }}>
+          <div className="row justify-content-center">
+            <div className="col-md-6 col-lg-5">
+              <div className="card shadow p-4">
+                <h4 className="text-center mb-4">Complete Your Payment</h4>
 
-              {error && (
-                <div className="alert alert-danger text-center">{error}</div>
-              )}
+                {error && (
+                  <div className="alert alert-danger text-center">{error}</div>
+                )}
 
-              {!order ? (
-                <div className="text-center">Loading order details...</div>
-              ) : (
-                <>
-                  <p className="text-muted text-center mb-4">
-                    <strong>Order Total:</strong> ₹{order.totalAmount}
-                  </p>
+                {!order ? (
+                  <div className="text-center">Loading order details...</div>
+                ) : (
+                  <>
+                    <p className="text-muted text-center mb-4">
+                      <strong>Order Total:</strong> ₹{order.totalAmount}
+                    </p>
 
-                  <form onSubmit={handleSubmit}>
-                    <div className="mb-3">
-                      <label className="form-label">Card Details</label>
-                      <div
-                        className="form-control p-2"
-                        style={{ minHeight: "45px", backgroundColor: "#f8f9fa" }}
-                      >
-                        <CardElement
-                          options={{
-                            style: {
-                              base: {
-                                fontSize: "16px",
-                                color: "#495057",
-                                "::placeholder": {
-                                  color: "#6c757d",
+                    <form onSubmit={handleSubmit}>
+                      <div className="mb-3">
+                        <label className="form-label">Card Details</label>
+                        <div
+                          className="form-control p-2"
+                          style={{ minHeight: "45px", backgroundColor: "#f8f9fa" }}
+                        >
+                          <CardElement
+                            options={{
+                              style: {
+                                base: {
+                                  fontSize: "16px",
+                                  color: "#495057",
+                                  "::placeholder": {
+                                    color: "#6c757d",
+                                  },
                                 },
                               },
-                            },
-                          }}
-                        />
+                            }}
+                          />
+                        </div>
                       </div>
-                    </div>
 
-                    <button
-                      className="btn btn-primary w-100 mt-3"
-                      type="submit"
-                      disabled={!stripe}
-                    >
-                      Pay Now
-                    </button>
-                  </form>
-                </>
-              )}
+                      <button
+                        className="btn btn-primary w-100 mt-3"
+                        type="submit"
+                        disabled={!stripe}
+                      >
+                        Pay Now
+                      </button>
+                    </form>
+                  </>
+                )}
+              </div>
             </div>
           </div>
         </div>
-      </div>
       </div>
     </>
   );

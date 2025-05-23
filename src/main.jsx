@@ -6,13 +6,16 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { UserProvider } from './context/userContext.jsx';
 import { Provider } from "react-redux";
 import reduxStore from "./reduxStore";
+// import { ChakraProvider } from '@chakra-ui/react'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <UserProvider>
-    <Provider store={reduxStore}>
-    <App />
-    </Provider>
-    </UserProvider>
+    {/* <ChakraProvider> */}
+      <UserProvider>
+        <Provider store={reduxStore}>
+          <App />
+        </Provider>
+      </UserProvider>
+    {/* </ChakraProvider> */}
   </StrictMode>,
 )

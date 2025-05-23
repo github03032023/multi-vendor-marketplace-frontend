@@ -41,9 +41,18 @@ const Cart = () => {
       navigate("/placeOrder");
     }
   };
+  const navigateHome = () => {
+    navigate("/");
+  };
 
-  const handleRemove = (productCode) => {
-    dispatch(removeItemFromCart(productCode));
+
+  // const handleRemove = (productCode) => {
+  //   dispatch(removeItemFromCart(productCode));
+  // };
+
+  const handleRemove = async (productCode) => {
+    await dispatch(removeItemFromCart(productCode));
+    dispatch(loadCart());
   };
 
   const isLoggedIn = !!localStorage.getItem("token");
@@ -55,7 +64,7 @@ const Cart = () => {
     } else {
       // Just clear localStorage or Redux state
       dispatch(clearCartOnLogout());
-      
+
     }
   };
 
@@ -76,25 +85,21 @@ const Cart = () => {
             {cartItems.map((item) => (
               <div
                 key={item.productId}
-                className="col-12 col-sm-12 col-md-12 col-lg-12 mb-3"
+                className="card mb-4 shadow-sm p-3 border-0"
               >
-                <div className="card h-100 d-flex flex-column align-items-center text-center p-3">
-                  <img
-                    src={
-                      item.images?.[0]?.url ??
-                      "https://members.naeyc.org/eweb/images/DEMO1/notavailable.jpg"
-                    }
-                    className="card-img-top img-fluid"
-                    alt={item.productName}
-                    style={{ maxWidth: "100px" }}
-                  />
-                  <div className="card-body">
-                    <h5 className="card-title">{item.productName}</h5>
-                    <p className="card-text fw-bold">
-                      ${item.price} × {item.quantity} = ${(item.price * item.quantity).toFixed(2)}
-                    </p>
-
-                    <div className="d-flex justify-content-center align-items-center mb-2">
+                <div className="row g-3 align-items-center">
+                  {/* Left: Product Image + Quantity Control */}
+                  <div className="col-12 col-md-3 text-center">
+                    <img
+                      src={
+                        item.images?.[0]?.url ??
+                        "https://members.naeyc.org/eweb/images/DEMO1/notavailable.jpg"
+                      }
+                      alt={item.productName}
+                      className="img-fluid rounded"
+                      style={{ maxHeight: "120px", objectFit: "contain" }}
+                    />
+                    <div className="d-flex justify-content-center align-items-center mt-2">
                       <button
                         className="btn btn-outline-secondary btn-sm me-2"
                         onClick={() => handleQuantityChange(item.productCode, item.quantity, -1)}
@@ -109,16 +114,32 @@ const Cart = () => {
                         +
                       </button>
                     </div>
-
-                    <p className="card-text text-muted">{item.category}</p>
                   </div>
 
-                  <button
-                    className="btn btn-danger btn-sm"
-                    onClick={() => handleRemove(item.productCode)}
-                  >
-                    Remove
-                  </button>
+                  {/* Right: Product Details */}
+                  <div className="col-12 col-md-9">
+                    {/* <h5>{item.productName}</h5> */}
+                    <Link to={`/product/${item.productCode}`}>
+                      <h5>{item.productName}</h5>
+
+                    </Link>
+                    <p className="text-muted mb-1">{item.description}</p>
+                    <p className="mb-1">
+                      <strong>Vendor:</strong> {item.vendorCompanyName} ({item.vendorCountry})
+                    </p>
+                    <p className="mb-1">
+                      <strong>Category:</strong> {item.category}
+                    </p>
+                    <p className="fw-bold mb-2">
+                      Rs.{item.price} × {item.quantity} = Rs.{(item.price * item.quantity).toFixed(2)}
+                    </p>
+                    <button
+                      className="btn btn-sm btn-danger"
+                      onClick={() => handleRemove(item.productCode)}
+                    >
+                      Remove
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
@@ -133,24 +154,48 @@ const Cart = () => {
             </h5>
             <h5 className="m-0">
               Total Price:{" "}
-              <span className="fw-bold">${totalPrice.toFixed(2)}</span>
+              <span className="fw-bold">Rs.{totalPrice.toFixed(2)}</span>
             </h5>
           </div>
+          <div className="d-flex flex-column flex-md-row justify-content-md-end gap-2 mt-4">
 
-          <button className="btn btn-success mt-3" onClick={proceedToPay}>
-            Proceed To Pay
-          </button>
+            <button
+              className="btn btn-warning"
+              onClick={handleClearCart}
+            >
+              <i className="bi bi-trash3 me-1"></i>Clear Cart
+            </button>
+
+            <button
+              className="btn btn-info"
+              onClick={navigateHome}
+            >
+              <i className="bi bi-plus-circle me-1"></i>Add more items
+            </button>
+            <button className="btn btn-success" onClick={proceedToPay}>
+              <i className="bi bi-credit-card me-1"></i>Proceed To Pay
+            </button>
+          </div>
         </>
       )}
-
+      {/* 
       {cartItems.length > 0 && (
-        <button
-          className="btn btn-warning mt-3"
-          onClick={handleClearCart}
-        >
-          Clear Cart
-        </button>
-      )}
+        <>
+          <button
+            className="btn btn-warning mt-3"
+            onClick={handleClearCart}
+          >
+            Clear Cart
+          </button>
+
+          <button
+            className="btn btn-info mt-3"
+            onClick={navigateHome}
+          >
+            Add more items to cart
+          </button>
+        </>
+      )} */}
     </div>
   );
 };

@@ -1,6 +1,7 @@
+
 import React, { useRef, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from '../../api/axiosSetUp';
+import axiosInstance from '../../api/axiosSetUp';
 import register from '../../assets/images/RegisterNow.jpg';
 
 const countryCodes = [
@@ -40,7 +41,7 @@ const UserRegister = () => {
                 if (value !== formRef.current?.password?.value) return 'Passwords do not match';
                 break;
             case 'phone':
-                if (!/^\d{6,15}$/.test(value)) return 'Phone must be 6–15 digits';
+                if (!/^\d{10,15}$/.test(value)) return 'Phone must be 10–15 digits';
                 break;
             case 'age':
                 if (value < 18 || value > 100) return 'Age must be between 18 and 100';
@@ -97,7 +98,7 @@ const UserRegister = () => {
         }
 
         try {
-            const response = await axios.post('/customer/registerCustomer', data);
+            const response = await axiosInstance.post('/customer/registerCustomer', data);
             console.log("data",data);
             if (response.data.success) {
                 navigate('/login');
@@ -111,119 +112,145 @@ const UserRegister = () => {
     };
 
     return (
-        <div className="container-fluid min-vh-100 d-flex align-items-center justify-content-center" style={{ paddingTop: '60px' }}>
-            <div className="row w-100 justify-content-center align-items-stretch" style={{ maxWidth: '1200px' }}>
-                {/* Left Image */}
-                <div className="col-md-4 d-none d-md-flex p-0">
-                    <div className="w-100 h-100">
-                        <img
-                            src={register}
-                            alt="Register"
-                            className="img-fluid w-100 h-100 rounded-start"
-                            style={{ objectFit: 'cover' }}
-                        />
+        <div className="container-fluid min-vh-100 d-flex align-items-center justify-content-center bg-light py-5">
+    <div className="row w-100 justify-content-center align-items-stretch px-3" style={{ maxWidth: '1300px' }}>
+        
+        {/* Left Column - Image + Why Join */}
+        <div className="col-lg-5 col-md-6 d-none d-md-flex flex-column justify-content-between bg-primary text-white p-4 rounded-start">
+            <img src={register} alt="Register" className="img-fluid rounded mb-3" style={{ objectFit: 'cover', height: '200px' }} />
+            <div>
+                <h4 className="fw-bold">Why Join Us?</h4>
+                <ul className="list-unstyled">
+                    <li>✔ Exclusive member deals</li>
+                    <li>✔ Fast and secure checkout</li>
+                    <li>✔ Access to your order history</li>
+                    <li>✔ Personalized recommendations</li>
+                </ul>
+            </div>
+
+            <div id="testimonialCarousel" className="carousel slide mt-auto" data-bs-ride="carousel">
+                <div className="carousel-inner">
+                    <div className="carousel-item active">
+                        <blockquote className="blockquote">
+                            <p>“Amazing service! Easy to register and shop.”</p>
+                            <footer className="blockquote-footer text-white">Sarah K.</footer>
+                        </blockquote>
                     </div>
-                </div>
-
-                {/* Right Form */}
-                <div className="col-md-8 bg-white p-5 rounded-end shadow-lg d-flex flex-column justify-content-center">
-                    <h2 className="text-center mb-4">Register</h2>
-                    {error && <p className="alert alert-danger">{error}</p>}
-
-                    <form ref={formRef} onSubmit={handleSubmit} noValidate>
-                        <div className="row">
-                            <div className="col-md-6 mb-3">
-                                <label className="form-label">Name</label>
-                                <input type="text" name="name" className={`form-control ${errors.name ? 'is-invalid' : ''}`} onBlur={handleBlur} required />
-                                {errors.name && <div className="invalid-feedback">{errors.name}</div>}
-                            </div>
-                            <div className="col-md-6 mb-3">
-                                <label className="form-label">Email</label>
-                                <input type="email" name="email" className={`form-control ${errors.email ? 'is-invalid' : ''}`} onBlur={handleBlur} required />
-                                {errors.email && <div className="invalid-feedback">{errors.email}</div>}
-                            </div>
-                        </div>
-
-                        <div className="row">
-                            <div className="col-md-6 mb-3">
-                                <label className="form-label">Password</label>
-                                <input type="password" name="password" className={`form-control ${errors.password ? 'is-invalid' : ''}`} onBlur={handleBlur} required />
-                                {errors.password && <div className="invalid-feedback">{errors.password}</div>}
-                            </div>
-                            <div className="col-md-6 mb-3">
-                                <label className="form-label">Confirm Password</label>
-                                <input type="password" name="confirmpassword" className={`form-control ${errors.confirmpassword ? 'is-invalid' : ''}`} onBlur={handleBlur} required />
-                                {errors.confirmpassword && <div className="invalid-feedback">{errors.confirmpassword}</div>}
-                            </div>
-                        </div>
-
-                        <div className="row">
-                            <div className="col-md-3 mb-3">
-                                <label className="form-label">Country Code</label>
-                                <select name="countryCode" value={countryCode} onChange={(e) => setCountryCode(e.target.value)} className="form-control">
-                                    {countryCodes.map((c) => (
-                                        <option key={c.code} value={c.code}>{c.code} ({c.country})</option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div className="col-md-3 mb-3">
-                                <label className="form-label">Phone</label>
-                                <input type="tel" name="phone" className={`form-control ${errors.phone ? 'is-invalid' : ''}`} onBlur={handleBlur} required />
-                                {errors.phone && <div className="invalid-feedback">{errors.phone}</div>}
-                            </div>
-                            <div className="col-md-3 mb-3">
-                                <label className="form-label">Age</label>
-                                <input type="number" name="age" className={`form-control ${errors.age ? 'is-invalid' : ''}`} onBlur={handleBlur} required />
-                                {errors.age && <div className="invalid-feedback">{errors.age}</div>}
-                            </div>
-                            <div className="col-md-3 mb-3">
-                                <label className="form-label">Gender</label>
-                                <select name="gender" className="form-control" required>
-                                    <option value="">Select</option>
-                                    <option value="male">Male</option>
-                                    <option value="female">Female</option>
-                                    <option value="other">Other</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <h5 className="mt-4">Address</h5>
-                        <div className="row">
-                            <div className="col-md-6 mb-3">
-                                <label className="form-label">Street</label>
-                                <input type="text" name="street" className="form-control" />
-                            </div>
-                            <div className="col-md-6 mb-3">
-                                <label className="form-label">City</label>
-                                <input type="text" name="city" className="form-control" />
-                            </div>
-                        </div>
-
-                        <div className="row">
-                            <div className="col-md-4 mb-3">
-                                <label className="form-label">State</label>
-                                <input type="text" name="state" className="form-control" required />
-                            </div>
-                            <div className="col-md-4 mb-3">
-                                <label className="form-label">Postal Code</label>
-                                <input type="text" name="postalCode" className={`form-control ${errors.postalCode ? 'is-invalid' : ''}`} onBlur={handleBlur} required />
-                                {errors.postalCode && <div className="invalid-feedback">{errors.postalCode}</div>}
-                            </div>
-                            <div className="col-md-4 mb-3">
-                                <label className="form-label">Country</label>
-                                <input type="text" name="country" className="form-control" required />
-                            </div>
-                        </div>
-
-                        <button type="submit" className="btn btn-primary w-100">Register</button>
-                    </form>
-
-                    <p className="text-center mt-3">
-                        Already have an account? <Link to="/login">Login here</Link>
-                    </p>
+                    <div className="carousel-item">
+                        <blockquote className="blockquote">
+                            <p>“User-friendly and responsive design. Loved it!”</p>
+                            <footer className="blockquote-footer text-white">Raj M.</footer>
+                        </blockquote>
+                    </div>
                 </div>
             </div>
         </div>
+
+        {/* Right Column - Form */}
+        <div className="col-lg-7 col-md-6 bg-white p-4 p-md-5 rounded-end shadow-lg">
+            <h2 className="text-center mb-4">Create Your Account</h2>
+            {error && <p className="alert alert-danger">{error}</p>}
+
+            <form ref={formRef} onSubmit={handleSubmit} noValidate>
+                <div className="row g-3">
+                    {/* Name + Email */}
+                    <div className="col-sm-6">
+                        <label className="form-label">Name</label>
+                        <input type="text" name="name" className={`form-control ${errors.name ? 'is-invalid' : ''}`} onBlur={handleBlur} required />
+                        {errors.name && <div className="invalid-feedback">{errors.name}</div>}
+                    </div>
+                    <div className="col-sm-6">
+                        <label className="form-label">Email</label>
+                        <input type="email" name="email" className={`form-control ${errors.email ? 'is-invalid' : ''}`} onBlur={handleBlur} required />
+                        {errors.email && <div className="invalid-feedback">{errors.email}</div>}
+                    </div>
+
+                    {/* Password + Toggle */}
+                    <div className="col-sm-6">
+                        <label className="form-label">Password</label>
+                        <div className="input-group">
+                            <input type="password" name="password" id="password" className={`form-control ${errors.password ? 'is-invalid' : ''}`} onBlur={handleBlur} required />
+                            <button type="button" className="btn btn-outline-secondary" onClick={() => {
+                                const input = document.getElementById('password');
+                                input.type = input.type === 'password' ? 'text' : 'password';
+                            }}>
+                                <i className="bi bi-eye"></i>
+                            </button>
+                        </div>
+                        {errors.password && <div className="invalid-feedback d-block">{errors.password}</div>}
+                    </div>
+                    <div className="col-sm-6">
+                        <label className="form-label">Confirm Password</label>
+                        <input type="password" name="confirmpassword" className={`form-control ${errors.confirmpassword ? 'is-invalid' : ''}`} onBlur={handleBlur} required />
+                        {errors.confirmpassword && <div className="invalid-feedback">{errors.confirmpassword}</div>}
+                    </div>
+
+                    {/* Phone + Country Code */}
+                    <div className="col-sm-4">
+                        <label className="form-label">Country Code</label>
+                        <select name="countryCode" value={countryCode} onChange={(e) => setCountryCode(e.target.value)} className="form-select">
+                            {countryCodes.map((c) => (
+                                <option key={c.code} value={c.code}>{c.code} ({c.country})</option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="col-sm-4">
+                        <label className="form-label">Phone</label>
+                        <input type="tel" name="phone" className={`form-control ${errors.phone ? 'is-invalid' : ''}`} onBlur={handleBlur} required />
+                        {errors.phone && <div className="invalid-feedback">{errors.phone}</div>}
+                    </div>
+                    <div className="col-sm-2">
+                        <label className="form-label">Age</label>
+                        <input type="number" name="age" className={`form-control ${errors.age ? 'is-invalid' : ''}`} onBlur={handleBlur} required />
+                        {errors.age && <div className="invalid-feedback">{errors.age}</div>}
+                    </div>
+                    <div className="col-sm-2">
+                        <label className="form-label">Gender</label>
+                        <select name="gender" className="form-select" required>
+                            <option value="">Select</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    {/* Address */}
+                    <div className="col-12"><h5 className="mt-4">Address</h5></div>
+                    <div className="col-sm-6">
+                        <label className="form-label">Street</label>
+                        <input type="text" name="street" className="form-control" />
+                    </div>
+                    <div className="col-sm-6">
+                        <label className="form-label">City</label>
+                        <input type="text" name="city" className="form-control" />
+                    </div>
+                    <div className="col-sm-4">
+                        <label className="form-label">State</label>
+                        <input type="text" name="state" className="form-control" required />
+                    </div>
+                    <div className="col-sm-4">
+                        <label className="form-label">Postal Code</label>
+                        <input type="text" name="postalCode" className={`form-control ${errors.postalCode ? 'is-invalid' : ''}`} onBlur={handleBlur} required />
+                        {errors.postalCode && <div className="invalid-feedback">{errors.postalCode}</div>}
+                    </div>
+                    <div className="col-sm-4">
+                        <label className="form-label">Country</label>
+                        <input type="text" name="country" className="form-control" required />
+                    </div>
+
+                    <div className="col-12 mt-4">
+                        <button type="submit" className="btn btn-success w-100 py-2 fw-bold">Join Now</button>
+                    </div>
+                </div>
+            </form>
+
+            <p className="text-center mt-3">
+                Already have an account? <Link to="/login" className="text-decoration-none">Login here</Link>
+            </p>
+        </div>
+    </div>
+</div>
+
     );
 };
 

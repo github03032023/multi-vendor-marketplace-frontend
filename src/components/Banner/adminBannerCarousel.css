@@ -1,0 +1,8 @@
+.carousel .carousel-item img {
+    object-fit: cover;
+    border-radius: 0.5rem;
+  }
+  .carousel-caption p {
+    font-size: 1rem;
+    font-weight: 500;
+  }

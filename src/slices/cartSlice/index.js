@@ -32,6 +32,12 @@ const cartSlice = createSlice({
       state.totalQuantity = action.payload.reduce((total, item) => total + item.quantity, 0);
       saveToLocalStorage(state.items);
     },
+    
+    setRemoveCart: (state, action) => {
+      state.items = action.payload;
+      state.totalQuantity = action.payload.reduce((total, item) => total + item.quantity, 0);
+      // saveToLocalStorage(state.items);
+    },
 
     addToCart: (state, action) => {
       const newItem = action.payload;
@@ -66,6 +72,7 @@ const cartSlice = createSlice({
 export const {
   loadCartFromStorage,
   setCart,
+  setRemoveCart,
   addToCart,
   removeFromCart,
   clearCart,
