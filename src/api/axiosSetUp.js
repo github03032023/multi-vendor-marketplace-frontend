@@ -28,7 +28,8 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:5000/api/auth' // or your deployed backend URL
+  // baseURL: 'http://localhost:5000/api/auth' // or your deployed backend URL
+  baseURL: 'https://multi-vendor-marketplace-backend.onrender.com/api/auth'
 });
 
 // Interceptor to add token before each request
