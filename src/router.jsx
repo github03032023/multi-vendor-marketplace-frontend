@@ -69,7 +69,7 @@ const AppRoutes = () => {
                 <Route path="/vendorLogin" element={<PageWrapper><VendorLogin /></PageWrapper>} />
                 <Route path="/unauthorized" element={<PageWrapper><Unauthorized /></PageWrapper>} />
                 <Route path="/product/:productCode" element={<PageWrapper><ProductDisplayPage /></PageWrapper>} />
-                <Route path="/verifyEmail" element={<PageWrapper><EmailVerification /></PageWrapper>} />
+                <Route path="/verifyEmail" element={<EmailVerification />} />
                 <Route path="/verifyVendorEmail" element={<PageWrapper><VendorEmailVerification /></PageWrapper>} />
                 
                 <Route path="/homePageSection" element={<PageWrapper><HomepageSections /></PageWrapper>} />
