@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { useDispatch } from "react-redux";
 import axiosInstance from '../../api/axiosSetUp';
 import { useParams, useNavigate } from 'react-router-dom';
-import '../ProductDisplayPage/ProductDisplayPage.css';
+import '../ProductDisplayPage/productDisplayPage.css';
 import { addToCart } from "../../slices/cartSlice";
 import { addItemToCart } from "../../api/cartActions";
 import { UserContext } from '../../context/userContext';
