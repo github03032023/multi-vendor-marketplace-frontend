@@ -25,8 +25,7 @@ export const loadCart = () => async (dispatch) => {
 export const addItemToCart = (productCode, quantity) => async (dispatch) => {
   try {
     const response = await axiosInstance.post('/cart/addToCart', { productCode, quantity });
-    const product = response.data.cart.find(item => item.productCode === productCode); 
-    // dispatch(addToCart(product));
+    dispatch(setCart(response.data.cart));
     localStorage.setItem('cartItems', JSON.stringify(response.data.cart));
   } catch (error) {
     console.error("Add to cart failed:", error);
@@ -39,7 +38,7 @@ export const removeItemFromCart = (productCode) => async (dispatch) => {
         productCode,
       });
       // dispatch(removeFromCart(response.data.updatedCart));
-      //  dispatch(setCart(response.data.updatedCart));
+      dispatch(setCart(response.data.updatedCart));
       localStorage.setItem('cartItems', JSON.stringify(response.data.updatedCart));
     } catch (error) {
       console.error("Remove items from cart failed:", error.response?.data || error.message);

@@ -52,7 +52,7 @@ const Cart = () => {
 
   const handleRemove = async (productCode) => {
     await dispatch(removeItemFromCart(productCode));
-    dispatch(loadCart());
+    // dispatch(loadCart());
   };
 
   const isLoggedIn = !!localStorage.getItem("token");
