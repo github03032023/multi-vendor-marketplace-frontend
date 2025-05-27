@@ -48,7 +48,7 @@ const ProductDisplayPage = () => {
       vendorId: product.vendorId,
     };
     dispatch(addItemToCart(product.productCode, 1));
-    dispatch(addToCart(productToAdd));
+    // dispatch(addToCart(productToAdd));
     navigate(`/cart`);
   };
 
